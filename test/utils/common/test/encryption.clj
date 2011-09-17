@@ -1,4 +1,4 @@
-(ns utils.common.encryption.test
+(ns utils.common.test.encryption
   (:use clojure.test)
   (:require [utils.common.encryption :as encryption]))
 

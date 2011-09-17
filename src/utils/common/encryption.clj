@@ -1,14 +1,15 @@
 (ns utils.common.encryption
   (:import (javax.crypto.spec DESedeKeySpec))
   (:import (javax.crypto SecretKey SecretKeyFactory Cipher))
-  (:import (org.apache.commons.codec.binary Base64)))
+  (:import (org.apache.commons.codec.binary Base64))
+  (:require [utils.common.properties :as properties]))
 
-(def *encryption-key* "comGoogleGeolocationKey_i2mdpk!")
+(def *properties* (properties/load (str (System/getProperty "user.home") "/.properties.d/encryption")))
 
 (def create-cipher
   (memoize (fn [mode]
              (let [algorithm "DESede"
-                   keySpec (DESedeKeySpec. (.getBytes *encryption-key*))
+                   keySpec (DESedeKeySpec. (.getBytes (:encryption.key *properties*)))
                    keyFactory (SecretKeyFactory/getInstance algorithm)
                    key (.generateSecret keyFactory keySpec)]
                (doto (Cipher/getInstance algorithm)
