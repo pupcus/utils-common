@@ -1,5 +1,6 @@
 (ns utils.common.image
-  (:require [clojure.contrib.logging :as log])
+  (:refer-clojure :exclude [read])
+  (:require [clojure.tools.logging :as log])
   (:import (java.io File ByteArrayInputStream ByteArrayOutputStream InputStream BufferedInputStream FileInputStream))
   (:import (java.awt Graphics2D RenderingHints Transparency))
   (:import (java.awt.image BufferedImage))
@@ -31,7 +32,7 @@
     :else (throw (IllegalArgumentException.
                    "with-dispose only allows Symbols in bindings"))))
 
-(def *image-suffix* "png")
+(def image-suffix "png")
 
 (defn image-type [image]
   (if (= (.getTransparency image) (Transparency/OPAQUE))
@@ -183,11 +184,11 @@
 
 (defn to-ITextImage [image]
   (try
-    (with-disposal [writer (image-writer *image-suffix*)]
+    (with-disposal [writer (image-writer image-suffix)]
       (let [output (ByteArrayOutputStream.)]
         (with-open [os (ImageIO/createImageOutputStream output)]
           (.setOutput writer os)
-          (ImageIO/write image *image-suffix* os)
+          (ImageIO/write image image-suffix os)
           (com.lowagie.text.Image/getInstance (.toByteArray output)))))
     (catch Exception e
       (log/debug "unable to convert BufferedImage to iText image format!"))))

@@ -1,9 +1,9 @@
 (ns utils.common.password
   (:refer-clojure :exclude [hash])
-  (:import [org.apache.commons.codec.binary Base64])
-  (:require [clojure.contrib.str-utils2 :as str])  
+  (:require [clojure.string :as str])
   (:require [utils.common.hash :as hash])
-  (:require [utils.common.parse :as parse]))
+  (:require [utils.common.parse :as parse])
+  (:import [org.apache.commons.codec.binary Base64]))
 
 ;;
 ;; utility functions
@@ -27,11 +27,6 @@
 ;;
 ;; password hashing
 ;;
-
-(def *digest-take* 4)
-(def *salt-size-drop* 5)
-(def *salt-size-take* 2)
-(def *salt-drop* 8)
 
 (def digestToAlgorithm {
                       :MD5X :MD5
@@ -66,12 +61,23 @@
         salt (random-word salt-size)]
     (String. (Base64/encodeBase64 (.getBytes (str digest "$" salt-size "$" salt "$" (hash/hash algorithm (iterations salt) salt pw)))))))
 
+(def digest-take 4)
+(def salt-size-drop 5)
+(def salt-size-take 2)
+(def salt-drop 8)
+
+(defn str-take [n s]
+  (apply str (take n s)))
+
+(defn str-drop [n s]
+  (apply str (drop n s)))
+
 (defn matches? [pw check]
   (if-let [s (String. (Base64/decodeBase64 (.getBytes check)))]
-    (let [digest (str/take s *digest-take*)
-          size   (parse/parse-int (str/take (str/drop s *salt-size-drop*) *salt-size-take*))
-          salt   (str/take (str/drop s *salt-drop*) size)
-          hash (str/drop s (inc (+ *salt-drop* size)))]
+    (let [digest (str-take digest-take s)
+          size   (parse/parse-int (str-take salt-size-take (str-drop salt-size-drop s)))
+          salt   (str-take size (str-drop salt-drop s))
+          hash (str-drop (inc (+ salt-drop size)) s)]
       (= (hash/hash (name ((keyword digest) digestToAlgorithm)) (iterations salt) salt pw) hash))))
 
 
@@ -79,7 +85,7 @@
 ;; password strength
 ;;
 
-(def *min-length* 7)
+(def min-length 7)
 
 (defn contains-char? [c s]
   (some #(= c %) s))
@@ -97,7 +103,7 @@
   (> (count (filter #(contains-char? % s) numbers)) 0))
 
 (defn strong? [s]
-  (and (> (count s) *min-length*)
+  (and (> (count s) min-length)
        (has-number? s)
        (has-punctuation? s)
        (has-lower-case? s)

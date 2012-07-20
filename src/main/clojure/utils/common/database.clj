@@ -1,5 +1,4 @@
-(ns utils.common.database
-  (:require [clojure.contrib.string :as str]))
+(ns utils.common.database)
 
 (defn get-timestamp-string []
   (let [sdf (java.text.SimpleDateFormat. "yyyy-MM-dd hh:mm:ss")

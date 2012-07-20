@@ -4,12 +4,12 @@
   (:import (org.apache.commons.codec.binary Base64))
   (:require [utils.common.properties :as properties]))
 
-(def *properties* (properties/load (str (System/getProperty "user.home") "/.properties.d/encryption")))
+(def encryption-properties (properties/load (str (System/getProperty "user.home") "/.properties.d/encryption")))
 
 (def create-cipher
   (memoize (fn [mode]
              (let [algorithm "DESede"
-                   keySpec (DESedeKeySpec. (.getBytes (:encryption.key *properties*)))
+                   keySpec (DESedeKeySpec. (.getBytes (:encryption.key encryption-properties)))
                    keyFactory (SecretKeyFactory/getInstance algorithm)
                    key (.generateSecret keyFactory keySpec)]
                (doto (Cipher/getInstance algorithm)
