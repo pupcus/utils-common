@@ -14,9 +14,9 @@
   <packaging>jar</packaging>
   
   <scm>
-    <connection>scm:git:git@github.org:mdpendergrass/utils-common.git</connection>
-    <url>scm:git:git@github.org:mdpendergrass/utils-common.git</url>
-    <developerConnection>scm:git:git@github.org:mdpendergrass/utils-common.git</developerConnection>
+    <connection>scm:git:git://github.org/mdpendergrass/utils-common.git</connection>
+    <url>scm:git:git://github.org/mdpendergrass/utils-common.git</url>
+    <developerConnection>scm:git:git://github.org/mdpendergrass/utils-common.git</developerConnection>
   </scm>
   
   <developers>
