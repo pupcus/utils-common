@@ -13,6 +13,60 @@
   <description>various common application utilities</description>
   <packaging>jar</packaging>
   
+  <scm>
+    <connection>scm:git:git@github.org:mdpendergrass/utils-common.git</connection>
+    <url>scm:git:git@github.org:mdpendergrass/utils-common.git</url>
+    <developerConnection>scm:git:git@github.org:mdpendergrass/utils-common.git</developerConnection>
+  </scm>
+  
+  <developers>
+    <developer>
+      <id>mdpendergrass</id>
+      <email>mdpendergrass@gmail.com</email>
+      <name>Michael D. Pendergrass</name>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+
+    <repository>
+      <id>pupcus-releases</id>
+      <name>pupcus.org internal repository</name>
+      <url>http://maven.pupcus.org/archiva/repository/internal/</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>pupcus-snapshots</id>
+      <name>pupcus.org SNAPSHOT repository</name>
+      <url>http://maven.pupcus.org/archiva/repository/snapshots/</url>
+    </snapshotRepository>
+
+  </distributionManagement>
+
+  <repositories>
+
+    <repository>
+      <id>pupcus-releases</id>
+      <url>http://maven.pupcus.org/archiva/repository/internal/</url>
+    </repository>
+  
+    <repository>
+      <id>clojure-releases</id>
+      <url>http://build.clojure.org/releases</url>
+    </repository>
+    
+    <repository>
+      <id>central</id>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
+    
+    <repository>
+      <id>clojars</id>
+      <url>https://clojars.org/repo/</url>
+    </repository>
+
+  </repositories>
+  
   <dependencies>
     
     <dependency>
