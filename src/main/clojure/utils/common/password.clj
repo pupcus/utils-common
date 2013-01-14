@@ -75,7 +75,7 @@
 (defn matches? [pw check]
   (if-let [s (String. (Base64/decodeBase64 (.getBytes check)))]
     (let [digest (str-take digest-take s)
-          size   (parse/parse-int (str-take salt-size-take (str-drop salt-size-drop s)))
+          size   (parse/parse-number (str-take salt-size-take (str-drop salt-size-drop s)))
           salt   (str-take size (str-drop salt-drop s))
           hash (str-drop (inc (+ salt-drop size)) s)]
       (= (hash/hash (name ((keyword digest) digestToAlgorithm)) (iterations salt) salt pw) hash))))

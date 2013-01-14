@@ -1,12 +1,34 @@
 (ns utils.common.parse)
 
-(defmulti parse-int type)
-(defmethod parse-int java.lang.Integer [n] n)
-(defmethod parse-int java.lang.String [s]
+(defn- can-be-long? [n]
   (try
-    (Integer/parseInt s)
-    (catch NumberFormatException e 0)))
-(defmethod parse-int :default [x] 0)
+    (.longValueExact n)
+    (catch ArithmeticException e nil)))
+
+(defn- fit-result [n]
+  (cond
+   (can-be-long? n)  (.longValue n)
+   :otherwise        (.toBigInteger n)))
+
+(defmulti parse-number type)
+(defmethod parse-number java.lang.Byte          [n] n)
+(defmethod parse-number java.lang.Short         [n] n)
+(defmethod parse-number java.lang.Integer       [n] n)
+(defmethod parse-number java.lang.Long          [n] n)
+(defmethod parse-number java.math.BigInteger    [n] n)
+(defmethod parse-number java.lang.Float         [n] n)
+(defmethod parse-number java.lang.Double        [n] n)
+(defmethod parse-number java.math.BigDecimal    [n] n)
+
+(defmethod parse-number java.lang.String  [s]
+  (try
+    (let [n (java.math.BigDecimal. s)]
+      (if (= (.remainder n 1M) 0M)
+        (fit-result n)
+        n))
+    (catch Exception e 0)))
+
+(defmethod parse-number :default [x] 0)
 
 (defn parse-date* [s format]
   (try
