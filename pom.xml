@@ -218,22 +218,6 @@
           <copyAllCompiledNamespaces>true</copyAllCompiledNamespaces>
           <temporaryOutputDirectory>true</temporaryOutputDirectory>
         </configuration>
-        <executions>
-          <execution>
-            <id>compile-clj</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>test-clj</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       
       <plugin>
