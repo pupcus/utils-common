@@ -1,0 +1,15 @@
+*.iml
+*.ipr
+*.iws
+target
+logs
+temp-testng*
+test-output
+release.properties
+.classpath
+.settings
+.project
+.*.swp
+*~
+classes/
+*.log
