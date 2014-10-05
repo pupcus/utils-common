@@ -11,8 +11,8 @@
   <packaging>clojure</packaging>
   
   <scm>
-    <connection>scm:git:git@github.com/mdpendergrass/utils-common.git</connection>
-    <developerConnection>scm:git:git@github.com/mdpendergrass/utils-common.git</developerConnection>
+    <connection>scm:git:git@github.com:mdpendergrass/utils-common.git</connection>
+    <developerConnection>scm:git:git@github.com:mdpendergrass/utils-common.git</developerConnection>
   </scm>
   
   <developers>
