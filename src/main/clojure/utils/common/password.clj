@@ -11,6 +11,9 @@
 
 (def rnd (java.util.Random.))
 
+(defn random-element [coll]
+  (nth coll (.nextInt rnd (count coll))))
+
 (def upper-case "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 (def lower-case "abcdefghijklmnopqrstuvwxyz")
 (def numbers    "0123456789")
@@ -19,7 +22,7 @@
 (def characters (map char (concat lower-case numbers punctuation upper-case)))
 
 (defn character []
-  (nth characters (.nextInt rnd (count characters))))
+  (random-element characters))
 
 (defn random-word [length]
   (apply str (take length (repeatedly character))))
@@ -29,20 +32,23 @@
 ;;
 
 (def digestToAlgorithm {
-                      :MD5X :MD5
-                      :SHA1 :SHA
-                      :SHA2 :SHA-256
-                      :SHA3 :SHA-384
-                      :SHA5 :SHA-512
-                      })
+                        :MD5X :MD5
+                        :SHA1 :SHA
+                        :SHA2 :SHA-256
+                        :SHA3 :SHA-384
+                        :SHA5 :SHA-512
+                        })
 
 (def algorithmToDigest {
-                      :MD5     :MD5X
-                      :SHA     :SHA1
-                      :SHA-256 :SHA2
-                      :SHA-384 :SHA3
-                      :SHA-512 :SHA5
+                        :MD5     :MD5X
+                        :SHA     :SHA1
+                        :SHA-256 :SHA2
+                        :SHA-384 :SHA3
+                        :SHA-512 :SHA5
                         })
+
+(defn random-digest []
+  (random-element ["md5" "sha" "sha-256" "sha-384" "sha-512"]))
 
 (defn iterations [s]
   (inc (reduce + (map #(int %) s))))

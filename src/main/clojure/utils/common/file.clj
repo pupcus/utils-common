@@ -3,6 +3,14 @@
 (def extension-separator ".")
 (def path-separator (System/getProperty "file.separator"))
 
+(defmulti exists? class)
+
+(defmethod exists? java.io.File [file]
+  (.exists file))
+
+(defmethod exists? java.lang.String [file]
+  (.exists (java.io.File. file)))
+
 (defmulti extension class)
 
 (defmethod extension java.lang.String [file]
