@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>  
   <groupId>utils-common</groupId>
   <artifactId>utils-common</artifactId>
-  <version>0.0.8</version>
+  <version>0.0.8-SNAPSHOT</version>
   <name>utils-common</name>
   <description>various common application utilities</description>
   <packaging>clojure</packaging>
@@ -13,7 +13,6 @@
   <scm>
     <connection>scm:git:git@github.com/mdpendergrass/utils-common.git</connection>
     <developerConnection>scm:git:git@github.com/mdpendergrass/utils-common.git</developerConnection>
-    <tag>utils-common-0.0.8</tag>
   </scm>
   
   <developers>
