@@ -3,30 +3,34 @@
 (def ^:dynamic *errors*)
 
 (defn set-error [key message]
-  (if (bound? #'*errors*)
-    (swap! *errors* conj [key message])))
-
-(defn has-errors? []
-  (if (bound? #'*errors*)
-    (> (count (deref *errors*)) 0)
-    false))
-
-(defn has-error? [key]
-  (if (bound? #'*errors*)
-    (if-let [msg ((deref *errors*) key)]
-      true)))
+  (when (bound? #'utils.common.errors/*errors*)
+    (let [messages (get (deref utils.common.errors/*errors*) key [])]
+      (swap! *errors* assoc key (conj messages message)))))
 
 (defn no-errors? []
-  (not (has-errors?)))
+  (if (bound? #'utils.common.errors/*errors*)
+    (empty? (deref utils.common.errors/*errors*))
+    true))
 
-(defn error-msg [key]
-  (if (bound? #'*errors*)
-    ((deref *errors*) key)))
+(defn has-errors? []
+  (not (no-errors?)))
 
 (defn error-msgs []
-  (if (bound? #'*errors*)
-    (deref *errors*)))
+  (when (bound? #'utils.common.errors/*errors*)
+    (deref utils.common.errors/*errors*)))
+
+(defn error-msg [key]
+  (when (bound? #'utils.common.errors/*errors*)
+    ((deref utils.common.errors/*errors*) key)))
+
+(defn has-error? [key]
+  (error-msg key))
 
 (defmacro with-errors [& body]
   `(binding [~'utils.common.errors/*errors* (atom {})]
      ~@body))
+
+(defn wrap-errors [handler]
+  (fn [req]
+    (with-errors
+      (handler req))))
