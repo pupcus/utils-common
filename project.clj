@@ -1,4 +1,4 @@
-(defproject utils-common "0.1.0-SNAPSHOT"
+(defproject utils-common "0.1.0"
 
   :description "various utilities"
 
