@@ -1,12 +1,7 @@
 (ns utils.common.image
   (:refer-clojure :exclude [read])
-  (:require [clojure.tools.logging :as log])
-  (:import (java.io File ByteArrayInputStream ByteArrayOutputStream InputStream BufferedInputStream FileInputStream))
-  (:import (java.awt Graphics2D RenderingHints Transparency))
-  (:import (java.awt.image BufferedImage))
-  (:import (javax.imageio ImageIO ImageReader ImageWriter))
-  (:import (javax.imageio.stream ImageInputStream ImageOutputStream))
-  (:require [utils.common.file :as file-utils]))
+  (:require [clojure.tools.logging :as log]
+            [utils.common.file :as file.util]))
 
 
 (defmacro assert-args [fnname & pairs]
@@ -35,15 +30,15 @@
 (def image-suffix "png")
 
 (defn image-type [image]
-  (if (= (.getTransparency image) (Transparency/OPAQUE))
-    (BufferedImage/TYPE_INT_RGB)
-    (BufferedImage/TYPE_INT_ARGB)))
+  (if (= (.getTransparency image) (java.awt.Transparency/OPAQUE))
+    (java.awt.image.BufferedImage/TYPE_INT_RGB)
+    (java.awt.image.BufferedImage/TYPE_INT_ARGB)))
 
 (defn- resize* [image w h type]
-  (let [ret (BufferedImage. w h type)]
+  (let [ret (java.awt.image.BufferedImage. w h type)]
     (doto (.createGraphics ret)
-      (.setRenderingHint RenderingHints/KEY_INTERPOLATION RenderingHints/VALUE_INTERPOLATION_BICUBIC)
-      (.setRenderingHint RenderingHints/KEY_RENDERING RenderingHints/VALUE_RENDER_QUALITY)
+      (.setRenderingHint java.awt.RenderingHints/KEY_INTERPOLATION java.awt.RenderingHints/VALUE_INTERPOLATION_BICUBIC)
+      (.setRenderingHint java.awt.RenderingHints/KEY_RENDERING java.awt.RenderingHints/VALUE_RENDER_QUALITY)
       (.drawImage image 0 0 w h nil)
       (.dispose))
     ret))
@@ -87,7 +82,7 @@
         h (.getHeight image)
         type (image-type image)
         offset (/ (- w max-width) 2)
-        ret (BufferedImage. max-width h type)]
+        ret (java.awt.image.BufferedImage. max-width h type)]
     (doseq [i (range max-width), j (range h)] (.setRGB ret i j (.getRGB image (+ i offset) j)))
     ret))
 
@@ -96,7 +91,7 @@
         h (.getHeight image)
         type (image-type image)
         offset (/ (- h max-height) 2)
-        ret (BufferedImage. w max-height type)]
+        ret (java.awt.image.BufferedImage. w max-height type)]
     (doseq [i (range w), j (range max-height)] (.setRGB ret i j (.getRGB image i (+ j offset))))
     ret))
 
@@ -104,7 +99,7 @@
   (let [w (.getWidth image)
         h (.getHeight image)
         type (image-type image)
-        ret (BufferedImage. h w type)]
+        ret (java.awt.image.BufferedImage. h w type)]
     (doseq [i (range w), j (range h)] (.setRGB ret j (- w 1 i) (.getRGB image i j)))
     ret))
 
@@ -112,7 +107,7 @@
   (let [w (.getWidth image)
         h (.getHeight image)
         type (image-type image)
-        ret (BufferedImage. h w type)]
+        ret (java.awt.image.BufferedImage. h w type)]
     (doseq [i (range w), j (range h)] (.setRGB ret (- h 1 j) i (.getRGB image i j)))
     ret))
 
@@ -146,7 +141,7 @@
 
 (defn image-writer [suffix]
   (try
-    (let [writer (.next (ImageIO/getImageWritersBySuffix suffix))]
+    (let [writer (.next (javax.imageio.ImageIO/getImageWritersBySuffix suffix))]
       (log/debug (str "using first writer: " (.getVendorName (.getOriginatingProvider writer))))
       writer)
     (catch Exception e
@@ -154,7 +149,7 @@
 
 (defn image-reader [suffix]
   (try
-    (let [reader (.next (ImageIO/getImageReadersBySuffix suffix))]
+    (let [reader (.next (javax.imageio.ImageIO/getImageReadersBySuffix suffix))]
       (log/debug (str "using first reader: " (.getVendorName (.getOriginatingProvider reader))))
       reader)
     (catch Exception e
@@ -163,8 +158,8 @@
 (defn read [filename]
   (try
     (let [file (java.io.File. filename)]
-      (with-disposal [reader (image-reader (file-utils/extension (.toString file)))]
-        (with-open [in (ImageIO/createImageInputStream (BufferedInputStream. (FileInputStream. file)))]
+      (with-disposal [reader (image-reader (file.util/extension file))]
+        (with-open [in (javax.imageio.ImageIO/createImageInputStream (java.io.BufferedInputStream. (java.io.FileInputStream. file)))]
           (.setInput reader in false)
           (.read reader 0))))
     (catch Exception e
@@ -173,11 +168,11 @@
 
 (defn save [image file]
   (try
-    (let [extension (file-utils/extension file)]
+    (let [extension (file.util/extension file)]
       (with-disposal [writer (image-writer extension)]
-        (with-open [os (ImageIO/createImageOutputStream file)]
+        (with-open [os (javax.imageio.ImageIO/createImageOutputStream file)]
           (.setOutput writer os)
-          (ImageIO/write image extension os))))
+          (javax.imageio.ImageIO/write image extension os))))
     (catch Exception e
       (log/debug (str "unable to save image file [" file "]"))
       (.printStackTrace e))))
@@ -185,17 +180,17 @@
 (defn to-ITextImage [image]
   (try
     (with-disposal [writer (image-writer image-suffix)]
-      (let [output (ByteArrayOutputStream.)]
-        (with-open [os (ImageIO/createImageOutputStream output)]
+      (let [output (java.io.ByteArrayOutputStream.)]
+        (with-open [os (javax.imageio.ImageIO/createImageOutputStream output)]
           (.setOutput writer os)
-          (ImageIO/write image image-suffix os)
+          (javax.imageio.ImageIO/write image image-suffix os)
           (com.lowagie.text.Image/getInstance (.toByteArray output)))))
     (catch Exception e
       (log/debug "unable to convert BufferedImage to iText image format!"))))
 
 (defn to-BufferedImage [data]
   (try
-    (ImageIO/read (ByteArrayInputStream. data))
+    (javax.imageio.ImageIO/read (java.io.ByteArrayInputStream. data))
     (catch Exception e
       (log/debug (str "unable to decode image data to BufferedImage: " (.getMessage e)))
       (.printStackTrace e))))
