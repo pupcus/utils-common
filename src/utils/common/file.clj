@@ -1,7 +1,7 @@
 (ns utils.common.file)
 
 (def extension-separator ".")
-(def path-separator (System/getProperty "file.separator"))
+(def file-separator (System/getProperty "file.separator"))
 
 (defmulti exists? class)
 
@@ -27,7 +27,7 @@
 
 (defmethod filename java.lang.String [file]
   (let [dot (.lastIndexOf file extension-separator)
-        sep (.lastIndexOf file path-separator)
+        sep (.lastIndexOf file file-separator)
         start (if (> sep 0) (inc sep) 0)
         stop (if (> dot 0) dot (count file))]
     (.substring file start stop)))
@@ -39,7 +39,7 @@
 (defmulti path class)
 
 (defmethod path java.lang.String [file]
-  (let [sep (.lastIndexOf file path-separator)]
+  (let [sep (.lastIndexOf file file-separator)]
     (if (> sep 0)
       (.substring file 0 (inc sep))
       (str ""))))
