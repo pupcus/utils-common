@@ -1,6 +1,6 @@
 (ns utils.common.errors.test
-  (:use clojure.test)
-  (:require [utils.common.errors :as errors]))
+  (:require [clojure.test :refer :all]
+            [utils.common.errors :as errors]))
 
 (deftest unbound-test
     (is (true? (errors/no-errors?)))
@@ -19,6 +19,6 @@
     (errors/set-error :key "a message")
     (is (false? (errors/no-errors?)))
     (is (true? (errors/has-errors?)))
-    (is (true? (errors/has-error? :key)))
-    (is (= "a message" (errors/error-msg :key)))
-    (is (= {:key "a message"} (errors/error-msgs)))))
+    (is (= ["a message"] (errors/has-error? :key)))
+    (is (= ["a message"] (errors/error-msg :key)))
+    (is (= {:key ["a message"]} (errors/error-msgs)))))
