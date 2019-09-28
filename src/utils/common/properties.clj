@@ -1,6 +1,6 @@
 (ns utils.common.properties
   (:refer-clojure :exclude [load])
-  (require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log]))
 
 (defn- available? [^java.io.File file]
   (and (.exists file) (.canRead file)))

@@ -9,23 +9,18 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/tools.logging "0.4.0"]
+  :dependencies [[org.clojure/tools.logging "0.5.0"]
                  [com.lowagie/itext "2.1.7"]
-                 [commons-codec "1.11"]
+                 [commons-codec "1.13"]
                  [hiccup "1.0.5"]]
 
   :profiles {:dev  {:resource-paths ["dev-resources"]
-                    :dependencies [[org.clojure/clojure "1.8.0"]
+                    :dependencies [[org.clojure/clojure "1.10.1"]
                                    [org.slf4j/slf4j-log4j12 "1.7.25"]]}}
 
-  :deploy-repositories [["snapshots"
-                         {:url "http://maven.pupcus.org/repository/snapshots"
-                          :sign-releases false
-                          :creds :gpg}]
-                        ["releases"
-                         {:url "http://maven.pupcus.org/repository/internal"
-                          :sign-releases false
-                          :creds :gpg}]]
+  :deploy-repositories {"releases" {:url "https://repo.clojars.org" :creds :gpg :sign-releases false}
+                        "snapshots" {:url "https://repo.clojars.org" :creds :gpg :sign-releases false}}
+
 
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
